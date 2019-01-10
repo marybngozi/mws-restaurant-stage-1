@@ -1,31 +1,39 @@
-const v = 2;
+const v = 1;
 const cacheStaticVer = `static-v${v}`;
 const cacheDynamicVer = `dynamic${v}`;
 
+
+const staticArr = [
+  '/',
+  'index.html',
+  'restaurant.html',
+  'js/main.js',
+  'js/dbhelper.js',
+  'js/restaurant_info.js',
+  'css/styles.css',
+  '/img/icons/dish.png',
+  'https://normalize-css.googlecode.com/svn/trunk/normalize.css',
+  'https://unpkg.com/leaflet@1.3.1/dist/leaflet.css'
+]
+
+/**
+* Installing Service Worker
+*/
 self.addEventListener('install', (e) => {
   console.log("Service Worker installing...");
   e.waitUntil(
     caches.open(cacheStaticVer)
     .then((cache) => {
       console.log('[Service Worker] Precaching app shell');
-      cache.addAll([
-        '/',
-        'index.html',
-        'restaurant.html',
-        'js/main.js',
-        'js/dbhelper.js',
-        'js/restaurant_info.js',
-        'css/styles.css',
-        'data/restaurants.json',
-        'src/images/main-image.jpg',
-        'https://normalize-css.googlecode.com/svn/trunk/normalize.css',
-        'https://unpkg.com/leaflet@1.3.1/dist/leaflet.css'
-      ]);
+      cache.addAll(staticArr);
     })
   );
 });
 
 
+/**
+* Activating Service Worker
+*/
 self.addEventListener('activate', (e) => {
   console.log("Service Worker activating...");
   e.waitUntil(
@@ -42,6 +50,11 @@ self.addEventListener('activate', (e) => {
   return self.clients.claim();
 })
 
+
+/**
+* Service worker cache and network side by side
+* Cache dot network strategy
+*/
 self.addEventListener('fetch', (e) => {
   //console.log('Service Worker fetching...', e);
   e.respondWith(
